@@ -7,7 +7,7 @@ import java.net.UnknownHostException;
 import javax.swing.UIManager;
 import javax.swing.UnsupportedLookAndFeelException;
 
-public class App {
+public class MainApp {
 	
 	public static String CONFIGS_PATH = System.getProperty("user.home") + File.separator + ".ubnt_configs";
 	

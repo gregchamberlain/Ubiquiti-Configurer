@@ -44,14 +44,14 @@ public class MainWindow extends JFrame {
 		setLayout(new BorderLayout());
 		getContentPane().setBackground(Color.WHITE);
 		
-		topPanel = new JPanel();
-		centerPanel = new JPanel();
-		bottomPanel = new JPanel();
-		add(topPanel, BorderLayout.NORTH);
-		add(centerPanel, BorderLayout.CENTER);
-		add(bottomPanel, BorderLayout.SOUTH);
-		
-		//Create MenuBar
+//		topPanel = new JPanel();
+//		centerPanel = new JPanel();
+//		bottomPanel = new JPanel();
+//		add(topPanel, BorderLayout.NORTH);
+//		add(centerPanel, BorderLayout.CENTER);
+//		add(bottomPanel, BorderLayout.SOUTH);
+//		
+		// Create MenuBar
 		menuBar = new JMenuBar();
 		fileMenu = new JMenu("File");
 		newConfigMenuItem = new JMenuItem("New Configuration");
@@ -60,44 +60,63 @@ public class MainWindow extends JFrame {
 		menuBar.add(fileMenu);
 		fileMenu.add(newConfigMenuItem);
 		
-		ipLabel = new JLabel("IP");
-		topPanel.add(ipLabel);
-		ipText = new JTextField("192.168.1.20");
-		ipText.setColumns(10);
-		topPanel.add(ipText);
-		usernameLabel = new JLabel("Username");
-		topPanel.add(usernameLabel);
-		usernameText = new JTextField("ubnt");
-		usernameText.setColumns(10);
-		topPanel.add(usernameText);
-		passwordLabel = new JLabel("Password");
-		topPanel.add(passwordLabel);
-		passwordText = new JTextField("ubnt");
-		passwordText.setColumns(10);
-		topPanel.add(passwordText);
+		getContentPane().add(getPanel());
+//		
+//		ipLabel = new JLabel("IP");
+//		topPanel.add(ipLabel);
+//		ipText = new JTextField("192.168.1.20");
+//		ipText.setColumns(10);
+//		topPanel.add(ipText);
+//		usernameLabel = new JLabel("Username");
+//		topPanel.add(usernameLabel);
+//		usernameText = new JTextField("ubnt");
+//		usernameText.setColumns(10);
+//		topPanel.add(usernameText);
+//		passwordLabel = new JLabel("Password");
+//		topPanel.add(passwordLabel);
+//		passwordText = new JTextField("ubnt");
+//		passwordText.setColumns(10);
+//		topPanel.add(passwordText);
+//		
+//		centerPanel.add(new JLabel("Unit Name: "));
+//		unitNameText = new JTextField(10);
+//		centerPanel.add(unitNameText);
+//		
+//		centerPanel.add(new JLabel("Static IP: "));
+//		staticIpText = new JTextField(15);
+//		centerPanel.add(staticIpText);
+//		
+//		configPicker = new JComboBox<ComboItem>();
+//		populateConfigs();
+//		centerPanel.add(configPicker);
+//		configPicker.addActionListener(new ActionListener() {
+//			@Override
+//			public void actionPerformed(ActionEvent arg0) {
+//				changeConfig(((ComboItem) configPicker.getSelectedItem()).getFile());
+//			}
+//		});
+//		configPicker.setSelectedIndex(0);
+//		
+//		configButton = new JButton("Configure");
+//		configButton.addActionListener(configureUnit());
+//		bottomPanel.add(configButton);
+	}
+	
+	private JPanel getPanel() {
+		JPanel panel = new JPanel();
+		panel.setLayout(new BorderLayout());
 		
-		centerPanel.add(new JLabel("Unit Name: "));
-		unitNameText = new JTextField(10);
-		centerPanel.add(unitNameText);
+		centerPanel = new JPanel();
+		panel.add(centerPanel, BorderLayout.CENTER);
 		
-		centerPanel.add(new JLabel("Static IP: "));
-		staticIpText = new JTextField(15);
-		centerPanel.add(staticIpText);
+		if (getConfigFiles().length < 1) {
+			centerPanel.add(new JLabel("No Configurations found."));
+			JButton button = new JButton("New Configuration");
+			button.addActionListener(newConfig());
+			centerPanel.add(button);
+		}
 		
-		configPicker = new JComboBox<ComboItem>();
-		populateConfigs();
-		centerPanel.add(configPicker);
-		configPicker.addActionListener(new ActionListener() {
-			@Override
-			public void actionPerformed(ActionEvent arg0) {
-				changeConfig(((ComboItem) configPicker.getSelectedItem()).getFile());
-			}
-		});
-		configPicker.setSelectedIndex(0);
-		
-		configButton = new JButton("Configure");
-		configButton.addActionListener(configureUnit());
-		bottomPanel.add(configButton);
+		return panel;
 	}
 	
 	private ActionListener configureUnit() {
@@ -111,8 +130,8 @@ public class MainWindow extends JFrame {
 				configs.put("netconf.1.ip", staticIpText.getText());
 				System.out.println(staticIp.substring(0, staticIp.lastIndexOf(".")) + ".1");
 //				configs.put("route.1.gateway", staticIpText.getText().substring(0, staticIpText.getText().lastIndexOf(".")) + ".1");
-				Tools.WriteTempFile(App.CONFIGS_PATH, configs);
-				String tmpConfigPath = App.CONFIGS_PATH + File.separator + "tmp" + File.separator + "tmp.cfg";
+				Tools.WriteTempFile(MainApp.CONFIGS_PATH, configs);
+				String tmpConfigPath = MainApp.CONFIGS_PATH + File.separator + "tmp" + File.separator + "tmp.cfg";
 				String HOST = ipText.getText();
 				String USER = usernameText.getText();
 				String PASS = passwordText.getText();
@@ -156,13 +175,13 @@ public class MainWindow extends JFrame {
 		};
 	}
 	
-	private File[] getFiles() {
+	private File[] getConfigFiles() {
 		File configFolder = new File(System.getProperty("user.home") + File.separator + ".ubnt_configs");
 		return configFolder.listFiles();
 	}
 	
 	private void populateConfigs() {
-		configFiles = getFiles();
+		configFiles = getConfigFiles();
 		for (File file : configFiles) {
 			if (!file.isDirectory()) {
 				configPicker.addItem(new ComboItem(file.getName(), file));

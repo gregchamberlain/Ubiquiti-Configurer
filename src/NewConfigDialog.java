@@ -105,7 +105,7 @@ public class NewConfigDialog extends JDialog{
     		FileOutputStream outStream = null;
     		try {
     			File source = new File(filePath);
-    			File dest = new File(App.CONFIGS_PATH + File.separator + nameText.getText() + ".cfg");
+    			File dest = new File(MainApp.CONFIGS_PATH + File.separator + nameText.getText() + ".cfg");
     			inStream = new FileInputStream(source);
     			outStream = new FileOutputStream(dest);
     			
